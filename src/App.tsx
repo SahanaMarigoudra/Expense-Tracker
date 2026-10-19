@@ -26,7 +26,10 @@ export default function App() {
   };
 
   const backToLanding = () => {
-    window.location.hash = '#landing';
+    try {
+      window.history.pushState(null, '', window.location.pathname);
+    } catch {}
+    window.location.hash = '';
     setCurrentView('landing');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };

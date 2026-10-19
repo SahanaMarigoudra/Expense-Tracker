@@ -126,18 +126,24 @@ export default function Sidebar({
     >
       {/* Brand Header */}
       <div className="p-5 flex items-center justify-between border-b border-opacity-10 border-slate-400">
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-violet-500/20">
+        <div
+          onClick={onLogout}
+          className="flex items-center gap-2.5 cursor-pointer group"
+          title="Back to Landing Page"
+        >
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
             <Sparkles className="w-5 h-5 text-violet-100" />
           </div>
           <div>
-            <span className="font-extrabold text-lg tracking-tight block leading-tight text-white">SpendWise</span>
+            <span className="font-extrabold text-lg tracking-tight block leading-tight text-white group-hover:text-violet-300 transition-colors">SpendWise</span>
             <span className="text-[10px] text-violet-400 font-semibold tracking-wider uppercase">Pro Dashboard</span>
           </div>
         </div>
         <button
-          className="p-1 rounded-lg text-slate-400 hover:text-white hover:bg-white/5 transition"
-          title="Minimize sidebar"
+          onClick={onLogout}
+          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+          title="Back to Landing Page"
+          aria-label="Back to Landing Page"
         >
           <ChevronLeft className="w-4 h-4" />
         </button>
