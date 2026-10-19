@@ -59,10 +59,33 @@ app.include_router(goals.router, prefix="/api")
 app.include_router(reminders.router, prefix="/api")
 app.include_router(summary.router, prefix="/api")
 
-@app.get("/")
-def read_root():
-    return {"status": "ok", "app": "SpendWise Personal Finance API"}
-
 @app.get("/api/health")
 def health_check():
     return {"status": "healthy"}
+
+from pathlib import Path
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+from fastapi import HTTPException
+
+# Check for production frontend build (dist directory) for unified hosting
+dist_path = Path(__file__).resolve().parent.parent.parent / "dist"
+if dist_path.exists() and (dist_path / "index.html").exists():
+    if (dist_path / "assets").exists():
+        app.mount("/assets", StaticFiles(directory=dist_path / "assets"), name="assets")
+    if (dist_path / "categories").exists():
+        app.mount("/categories", StaticFiles(directory=dist_path / "categories"), name="categories")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/") or full_path == "api" or full_path.startswith("docs") or full_path.startswith("openapi.json"):
+            raise HTTPException(status_code=404, detail="Not Found")
+        file_path = dist_path / full_path
+        if full_path and file_path.is_file():
+            return FileResponse(file_path)
+        return FileResponse(dist_path / "index.html")
+else:
+    @app.get("/")
+    def read_root():
+        return {"status": "ok", "app": "SpendWise Personal Finance API"}
+
