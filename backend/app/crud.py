@@ -46,11 +46,26 @@ DEFAULT_ACCOUNTS = [
 ]
 
 def seed_defaults_if_empty(db: Session):
-    # Seed categories safely (prevent duplicates)
-    existing_cats = {(c.name, c.type) for c in db.query(models.Category.name, models.Category.type).all()}
+    # 1. Clean up duplicate categories if any exist in the database
+    seen_cats = set()
+    all_cats = db.query(models.Category).order_by(models.Category.id.asc()).all()
+    has_dups = False
+    for cat in all_cats:
+        key = (cat.name.strip().lower(), str(cat.type).strip().lower())
+        if key in seen_cats:
+            db.delete(cat)
+            has_dups = True
+        else:
+            seen_cats.add(key)
+    if has_dups:
+        db.commit()
+
+    # 2. Seed missing default categories
+    existing_cats = {(c.name.strip().lower(), str(c.type).strip().lower()) for c in db.query(models.Category.name, models.Category.type).all()}
     added_cat = False
     for cat in DEFAULT_EXPENSE_CATEGORIES + DEFAULT_INCOME_CATEGORIES:
-        if (cat["name"], cat["type"]) not in existing_cats:
+        key = (cat["name"].strip().lower(), str(cat["type"]).strip().lower())
+        if key not in existing_cats:
             db.add(models.Category(
                 name=cat["name"],
                 type=cat["type"],
@@ -58,16 +73,30 @@ def seed_defaults_if_empty(db: Session):
                 color=cat["color"],
                 is_default=True
             ))
-            existing_cats.add((cat["name"], cat["type"]))
+            existing_cats.add(key)
             added_cat = True
     if added_cat:
         db.commit()
 
-    # Seed accounts safely (prevent duplicates)
-    existing_accs = {a.name for a in db.query(models.Account.name).all()}
+    # 3. Clean up duplicate accounts if any exist
+    seen_accs = set()
+    all_accs = db.query(models.Account).order_by(models.Account.id.asc()).all()
+    has_dup_accs = False
+    for acc in all_accs:
+        key = acc.name.strip().lower()
+        if key in seen_accs:
+            db.delete(acc)
+            has_dup_accs = True
+        else:
+            seen_accs.add(key)
+    if has_dup_accs:
+        db.commit()
+
+    # 4. Seed missing default accounts
+    existing_accs = {a.name.strip().lower() for a in db.query(models.Account.name).all()}
     added_acc = False
     for acc in DEFAULT_ACCOUNTS:
-        if acc["name"] not in existing_accs:
+        if acc["name"].strip().lower() not in existing_accs:
             db.add(models.Account(
                 name=acc["name"],
                 type=acc["type"],
@@ -75,7 +104,7 @@ def seed_defaults_if_empty(db: Session):
                 description=acc["description"],
                 is_active=True
             ))
-            existing_accs.add(acc["name"])
+            existing_accs.add(acc["name"].strip().lower())
             added_acc = True
     if added_acc:
         db.commit()
@@ -231,11 +260,20 @@ def get_transfers(db: Session) -> List[models.Transfer]:
 
 # ==================== CATEGORY CRUD ====================
 def get_categories(db: Session, type: Optional[schemas.TransactionType] = None) -> List[models.Category]:
+    seed_defaults_if_empty(db)
     query = db.query(models.Category)
     if type:
         val = type.value if hasattr(type, "value") else str(type)
         query = query.filter(models.Category.type == val)
-    return query.order_by(models.Category.name).all()
+    cats = query.order_by(models.Category.name).all()
+    seen = set()
+    unique_cats = []
+    for c in cats:
+        key = (c.name.strip().lower(), str(c.type).strip().lower())
+        if key not in seen:
+            seen.add(key)
+            unique_cats.append(c)
+    return unique_cats
 
 def create_category(db: Session, category: schemas.CategoryCreate) -> models.Category:
     db_obj = models.Category(

@@ -56,7 +56,11 @@ export default function DarkFinanceApp({ onLogout }: Props) {
 
       if (dashRes.ok) setDashData(await dashRes.json());
       if (accsRes.ok) setAccounts(await accsRes.json());
-      if (catsRes.ok) setCategories(await catsRes.json());
+      if (catsRes.ok) {
+        const rawCats: Category[] = await catsRes.json();
+        const uniqueCats = Array.from(new Map(rawCats.map(c => [`${c.name.trim().toLowerCase()}-${c.type}`, c])).values());
+        setCategories(uniqueCats);
+      }
       setBackendOnline(true);
     } catch {
       setBackendOnline(false);

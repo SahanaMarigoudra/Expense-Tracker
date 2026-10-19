@@ -170,12 +170,17 @@ export default function CategoriesPage({
   const [newCatColor, setNewCatColor] = useState('#8B5CF6');
   const [error, setError] = useState<string | null>(null);
 
-  const filtered = categories
+  // Ensure strict uniqueness by name + type to prevent repeated categories
+  const uniqueCategories = Array.from(
+    new Map(categories.map(c => [`${c.name.trim().toLowerCase()}-${c.type}`, c])).values()
+  );
+
+  const filtered = uniqueCategories
     .filter(c => c.type === activeTab)
     .filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
-  const expenseCount = categories.filter(c => c.type === 'expense').length;
-  const incomeCount = categories.filter(c => c.type === 'income').length;
+  const expenseCount = uniqueCategories.filter(c => c.type === 'expense').length;
+  const incomeCount = uniqueCategories.filter(c => c.type === 'income').length;
 
   const handleAddCategory = async (e: React.FormEvent) => {
     e.preventDefault();
