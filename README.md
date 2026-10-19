@@ -30,53 +30,12 @@ A full-stack, state-of-the-art Personal Finance & Expense Management web applica
 
 ---
 
-## 🚀 Quick Start
+## 🏛️ System Architecture
 
-### Prerequisites
-- Node.js 18+ & npm
-- Python 3.10+
+- **Client Application**: Single-page application built with React 19, TypeScript, Vite, and Tailwind CSS. Provides an intuitive dark-themed financial dashboard with real-time analytics, dynamic charting via Recharts, and instant responsiveness.
+- **RESTful API Service**: High-performance backend engineered with FastAPI and Pydantic v2 schemas for strict request/response data validation and auto-generated OpenAPI documentation.
+- **Data Persistence Layer**: Robust database storage powered by SQLAlchemy ORM with SQLite, ensuring zero external database dependencies and acid transactions.
 
-### 1. Backend Setup
-```bash
-# Navigate to the backend directory
-cd backend
-
-# Install Python dependencies
-pip install -r requirements.txt
-
-# Start the FastAPI server
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8002 --reload
-```
-- API Base URL: `http://127.0.0.1:8002`
-- Interactive Swagger UI: [http://127.0.0.1:8002/docs](http://127.0.0.1:8002/docs)
-
-### 2. Frontend Setup
-```bash
-# In the root project directory
-npm install
-
-# Start Vite development server
-npm run dev
-```
-- Web Application: [http://localhost:5173](http://localhost:5173)
-
----
-
-## 🐳 Docker Deployment
-
-To run the complete full-stack environment using Docker:
-```bash
-docker-compose up --build
-```
-
----
-
-## 🧪 Testing Backend
-
-```bash
-cd backend
-pytest -v
-```
 
 ---
 
