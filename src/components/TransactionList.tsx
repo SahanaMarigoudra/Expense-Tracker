@@ -1,3 +1,4 @@
+import { API } from '../config/api';
 import { useEffect, useState } from 'react';
 
 type Transaction = {
@@ -29,7 +30,7 @@ export default function TransactionList({
     try {
       setLoading(true);
       setError(null);
-      const res = await fetch('http://127.0.0.1:8002/api/transactions');
+      const res = await fetch(`${API}/transactions`);
       if (!res.ok) throw new Error('Failed to fetch transactions');
       const data = await res.json();
       const items = Array.isArray(data) ? data : data.items ?? [];
@@ -49,7 +50,7 @@ export default function TransactionList({
     if (!window.confirm('Are you sure you want to delete this transaction?')) return;
     try {
       setDeletingId(id);
-      const res = await fetch(`http://127.0.0.1:8002/api/transactions/${id}`, {
+      const res = await fetch(`${API}/transactions/${id}`, {
         method: 'DELETE',
       });
       if (!res.ok) throw new Error('Delete failed');

@@ -1,3 +1,4 @@
+import { API } from '../config/api';
 import { useEffect, useState } from 'react';
 
 type SummaryData = {
@@ -20,7 +21,7 @@ export default function SummaryCards({ refreshKey }: { refreshKey: number }) {
     const fetchSummary = async () => {
       try {
         setLoading(true);
-        const res = await fetch('http://127.0.0.1:8002/api/summary');
+        const res = await fetch(`${API}/summary`);
         if (res.ok) {
           const data = await res.json();
           setSummary(data);

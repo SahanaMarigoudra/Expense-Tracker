@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState, useEffect } from 'react';
 import { Bell, Plus, CheckCircle2, Clock, Trash2, Calendar } from 'lucide-react';
 import type { Reminder, Category, Account } from '../../types/finance';
@@ -22,7 +23,7 @@ export default function RemindersPage({ categories, accounts, isDarkMode }: Prop
 
   const fetchReminders = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8002/api/reminders');
+      const res = await fetch(`${API}/reminders`);
       if (res.ok) {
         setReminders(await res.json());
       }
@@ -38,7 +39,7 @@ export default function RemindersPage({ categories, accounts, isDarkMode }: Prop
   const handleCreateReminder = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://127.0.0.1:8002/api/reminders', {
+      await fetch(`${API}/reminders`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -62,7 +63,7 @@ export default function RemindersPage({ categories, accounts, isDarkMode }: Prop
 
   const handleMarkPaid = async (id: number) => {
     try {
-      await fetch(`http://127.0.0.1:8002/api/reminders/${id}/pay`, {
+      await fetch(`${API}/reminders/${id}/pay`, {
         method: 'POST'
       });
       fetchReminders();
@@ -73,7 +74,7 @@ export default function RemindersPage({ categories, accounts, isDarkMode }: Prop
 
   const handleDelete = async (id: number) => {
     try {
-      await fetch(`http://127.0.0.1:8002/api/reminders/${id}`, {
+      await fetch(`${API}/reminders/${id}`, {
         method: 'DELETE'
       });
       fetchReminders();

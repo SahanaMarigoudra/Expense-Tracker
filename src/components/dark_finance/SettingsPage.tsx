@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState, useEffect } from 'react';
 import {
   Settings as SettingsIcon,
@@ -67,9 +68,9 @@ export default function SettingsPage({
   const handleExportJSON = async () => {
     try {
       const [txRes, accRes, catRes] = await Promise.all([
-        fetch('http://127.0.0.1:8002/api/transactions'),
-        fetch('http://127.0.0.1:8002/api/accounts'),
-        fetch('http://127.0.0.1:8002/api/categories')
+        fetch(`${API}/transactions`),
+        fetch(`${API}/accounts`),
+        fetch(`${API}/categories`)
       ]);
 
       const backup = {
@@ -93,7 +94,7 @@ export default function SettingsPage({
   };
 
   const handleExportCSV = () => {
-    window.open('http://127.0.0.1:8002/api/transactions/export/csv', '_blank');
+    window.open(`${API}/transactions/export/csv`, '_blank');
   };
 
   return (

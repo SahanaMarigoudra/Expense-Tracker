@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import { useState, useEffect, useMemo } from 'react';
 import {
   Search,
@@ -40,8 +41,8 @@ export default function Dashboard({ onBackToLanding }: Props) {
   const fetchAllData = async () => {
     try {
       const [txRes, sumRes] = await Promise.all([
-        fetch('http://127.0.0.1:8002/api/transactions'),
-        fetch('http://127.0.0.1:8002/api/summary')
+        fetch(`${API}/transactions`),
+        fetch(`${API}/summary`)
       ]);
 
       if (txRes.ok && sumRes.ok) {
@@ -65,7 +66,7 @@ export default function Dashboard({ onBackToLanding }: Props) {
   const handleDelete = async (id: number) => {
     if (!window.confirm('Are you sure you want to delete this transaction?')) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8002/api/transactions/${id}`, {
+      const res = await fetch(`${API}/transactions/${id}`, {
         method: 'DELETE'
       });
       if (res.ok) {

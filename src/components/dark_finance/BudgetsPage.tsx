@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState, useEffect } from 'react';
 import { Target, Trophy, Plus, AlertTriangle, CheckCircle2, TrendingUp } from 'lucide-react';
 import type { Budget, SavingsGoal, Category } from '../../types/finance';
@@ -28,8 +29,8 @@ export default function BudgetsPage({ categories, isDarkMode }: Props) {
   const fetchData = async () => {
     try {
       const [bRes, gRes] = await Promise.all([
-        fetch('http://127.0.0.1:8002/api/budgets'),
-        fetch('http://127.0.0.1:8002/api/goals')
+        fetch(`${API}/budgets`),
+        fetch(`${API}/goals`)
       ]);
       if (bRes.ok && gRes.ok) {
         setBudgets(await bRes.json());
@@ -47,7 +48,7 @@ export default function BudgetsPage({ categories, isDarkMode }: Props) {
   const handleSaveBudget = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://127.0.0.1:8002/api/budgets', {
+      await fetch(`${API}/budgets`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -66,7 +67,7 @@ export default function BudgetsPage({ categories, isDarkMode }: Props) {
   const handleSaveGoal = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await fetch('http://127.0.0.1:8002/api/goals', {
+      await fetch(`${API}/goals`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -91,7 +92,7 @@ export default function BudgetsPage({ categories, isDarkMode }: Props) {
     const amt = parseFloat(contribAmount);
     if (!amt || amt <= 0) return;
     try {
-      await fetch(`http://127.0.0.1:8002/api/goals/${goalId}/contribute`, {
+      await fetch(`${API}/goals/${goalId}/contribute`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ amount: amt })

@@ -10,8 +10,7 @@ import {
 } from 'lucide-react';
 import type { Transaction, Account, Category } from '../../types/finance';
 import AddTransactionModal from './AddTransactionModal';
-
-const API = 'http://127.0.0.1:8002/api';
+import { API } from '../../config/api';
 
 type Props = {
   categories: Category[];

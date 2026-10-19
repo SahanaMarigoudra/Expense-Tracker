@@ -1,3 +1,4 @@
+import { API } from '../config/api';
 import { useState, useEffect } from 'react';
 import {
   Wallet,
@@ -36,7 +37,7 @@ export default function Dashboard({ onBackToHome }: { onBackToHome: () => void }
   // Fetch transactions for analytics and charts
   const fetchTransactions = async () => {
     try {
-      const res = await fetch('http://127.0.0.1:8002/api/transactions');
+      const res = await fetch(`${API}/transactions`);
       if (res.ok) {
         const data = await res.json();
         setTransactions(Array.isArray(data) ? data : data.items ?? []);

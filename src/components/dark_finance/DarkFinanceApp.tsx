@@ -14,8 +14,7 @@ import type {
   Account,
   Category
 } from '../../types/finance';
-
-const API = 'http://127.0.0.1:8002/api';
+import { API } from '../../config/api';
 
 const defaultDash: DashboardData = {
   summary: {

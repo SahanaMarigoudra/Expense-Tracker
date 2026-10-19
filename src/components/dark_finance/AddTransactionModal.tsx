@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState } from 'react';
 import { X, Plus, Calendar, DollarSign, Wallet, Tag } from 'lucide-react';
 import type { TransactionType, Category, Account } from '../../types/finance';
@@ -47,7 +48,7 @@ export default function AddTransactionModal({
 
     try {
       setLoading(true);
-      const res = await fetch('http://127.0.0.1:8002/api/transactions', {
+      const res = await fetch(`${API}/transactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

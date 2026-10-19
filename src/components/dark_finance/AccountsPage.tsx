@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState } from 'react';
 import { CreditCard, Plus, ArrowRightLeft, Wallet, ShieldCheck, CheckCircle2 } from 'lucide-react';
 import type { Account } from '../../types/finance';
@@ -41,7 +42,7 @@ export default function AccountsPage({ accounts, onRefresh, isDarkMode }: Props)
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await fetch('http://127.0.0.1:8002/api/accounts', {
+      const res = await fetch(`${API}/accounts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -78,7 +79,7 @@ export default function AccountsPage({ accounts, onRefresh, isDarkMode }: Props)
 
     try {
       setLoading(true);
-      const res = await fetch('http://127.0.0.1:8002/api/accounts/transfers', {
+      const res = await fetch(`${API}/accounts/transfers`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

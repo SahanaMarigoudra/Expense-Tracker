@@ -1,3 +1,4 @@
+import { API } from '../../config/api';
 import React, { useState } from 'react';
 import { Plus, Trash2, ChevronRight, Search, X } from 'lucide-react';
 import type { Category, TransactionType } from '../../types/finance';
@@ -181,7 +182,7 @@ export default function CategoriesPage({
     setError(null);
     if (!newCatName.trim()) return;
     try {
-      const res = await fetch('http://127.0.0.1:8002/api/categories', {
+      const res = await fetch(`${API}/categories`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: newCatName.trim(), type: activeTab, color: newCatColor, icon: 'Tag' }),
@@ -198,7 +199,7 @@ export default function CategoriesPage({
   const handleDeleteCategory = async (id: number, name: string) => {
     if (!confirm(`Delete category "${name}"?`)) return;
     try {
-      const res = await fetch(`http://127.0.0.1:8002/api/categories/${id}`, { method: 'DELETE' });
+      const res = await fetch(`${API}/categories/${id}`, { method: 'DELETE' });
       if (!res.ok) {
         const data = await res.json().catch(() => null);
         throw new Error(data?.detail || 'Cannot delete category in use');

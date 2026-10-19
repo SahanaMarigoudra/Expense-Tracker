@@ -1,3 +1,4 @@
+import { API } from '../config/api';
 import React, { useState } from 'react';
 
 const CATEGORIES = [
@@ -40,7 +41,7 @@ export default function TransactionForm({ onCreated }: { onCreated?: () => void 
 
     try {
       setIsSubmitting(true);
-      const response = await fetch('http://127.0.0.1:8002/api/transactions', {
+      const response = await fetch(`${API}/transactions`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
