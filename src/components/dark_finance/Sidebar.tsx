@@ -45,6 +45,8 @@ type SidebarProps = {
   isDarkMode: boolean;
   onToggleTheme: () => void;
   onLogout: () => void;
+  isOpen?: boolean;
+  onToggleCollapse?: () => void;
 };
 
 export default function Sidebar({
@@ -53,7 +55,9 @@ export default function Sidebar({
   onOpenAddModal,
   isDarkMode,
   onToggleTheme,
-  onLogout
+  onLogout,
+  isOpen = true,
+  onToggleCollapse
 }: SidebarProps) {
   const [isEditProfileOpen, setIsEditProfileOpen] = useState(false);
   const [profile, setProfile] = useState<UserProfile>(() => {
@@ -117,37 +121,49 @@ export default function Sidebar({
   ];
 
   return (
-    <aside
-      className={`w-64 flex flex-col shrink-0 min-h-screen border-r transition-colors duration-200 select-none z-30 ${
-        isDarkMode
-          ? 'bg-[#120F2D] border-[#221C4A] text-slate-200'
-          : 'bg-white border-slate-200 text-slate-700'
-      }`}
-    >
-      {/* Brand Header */}
-      <div className="p-5 flex items-center justify-between border-b border-opacity-10 border-slate-400">
+    <>
+      {/* Mobile Backdrop Overlay when sidebar is open */}
+      {isOpen && (
         <div
-          onClick={onLogout}
-          className="flex items-center gap-2.5 cursor-pointer group"
-          title="Back to Landing Page"
-        >
-          <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
-            <Sparkles className="w-5 h-5 text-violet-100" />
+          onClick={onToggleCollapse}
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity cursor-pointer"
+          aria-label="Close sidebar overlay"
+        />
+      )}
+
+      <aside
+        className={`fixed lg:static top-0 bottom-0 left-0 z-50 w-72 lg:w-64 flex flex-col shrink-0 min-h-screen border-r transition-all duration-300 ease-in-out select-none shadow-2xl lg:shadow-none ${
+          isOpen ? 'translate-x-0' : '-translate-x-full lg:hidden'
+        } ${
+          isDarkMode
+            ? 'bg-[#120F2D] border-[#221C4A] text-slate-200'
+            : 'bg-white border-slate-200 text-slate-700'
+        }`}
+      >
+        {/* Brand Header */}
+        <div className="p-5 flex items-center justify-between border-b border-opacity-10 border-slate-400">
+          <div
+            onClick={onLogout}
+            className="flex items-center gap-2.5 cursor-pointer group"
+            title="Back to Landing Page"
+          >
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white shadow-md shadow-violet-500/20 group-hover:scale-105 transition-transform">
+              <Sparkles className="w-5 h-5 text-violet-100" />
+            </div>
+            <div>
+              <span className="font-extrabold text-lg tracking-tight block leading-tight text-white group-hover:text-violet-300 transition-colors">SpendWise</span>
+              <span className="text-[10px] text-violet-400 font-semibold tracking-wider uppercase">Pro Dashboard</span>
+            </div>
           </div>
-          <div>
-            <span className="font-extrabold text-lg tracking-tight block leading-tight text-white group-hover:text-violet-300 transition-colors">SpendWise</span>
-            <span className="text-[10px] text-violet-400 font-semibold tracking-wider uppercase">Pro Dashboard</span>
-          </div>
+          <button
+            onClick={onToggleCollapse}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
+            title="Full screen report (Collapse sidebar)"
+            aria-label="Collapse sidebar"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
         </div>
-        <button
-          onClick={onLogout}
-          className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
-          title="Back to Landing Page"
-          aria-label="Back to Landing Page"
-        >
-          <ChevronLeft className="w-4 h-4" />
-        </button>
-      </div>
 
       {/* User Profile */}
       <div className="px-5 py-4 flex flex-col items-center border-b border-opacity-10 border-slate-400 text-center">
@@ -284,5 +300,6 @@ export default function Sidebar({
         </button>
       </div>
     </aside>
+  </>
   );
 }

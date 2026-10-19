@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
+import { Menu } from 'lucide-react';
 import Sidebar, { type NavPage } from './Sidebar';
 import DashboardOverview from './DashboardOverview';
 import TransactionsPage from './TransactionsPage';
@@ -35,6 +36,9 @@ type Props = { onLogout: () => void };
 export default function DarkFinanceApp({ onLogout }: Props) {
   const [activePage, setActivePage] = useState<NavPage>('dashboard');
   const [isDarkMode, setIsDarkMode] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(() => {
+    return typeof window !== 'undefined' ? window.innerWidth >= 1024 : false;
+  });
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [dashData, setDashData] = useState<DashboardData>(defaultDash);
   const [accounts, setAccounts] = useState<Account[]>([]);
@@ -177,17 +181,37 @@ export default function DarkFinanceApp({ onLogout }: Props) {
   };
 
   return (
-    <div className={`flex min-h-screen ${bg} transition-colors duration-200`}>
+    <div className={`flex min-h-screen ${bg} transition-colors duration-200 relative`}>
+      {/* Floating Toggle Button to open Sidebar when collapsed */}
+      {!isSidebarOpen && (
+        <button
+          onClick={() => setIsSidebarOpen(true)}
+          className="fixed top-3 left-3 z-30 p-2.5 rounded-xl bg-violet-600 hover:bg-violet-500 text-white shadow-xl shadow-violet-600/40 backdrop-blur-md flex items-center gap-2 cursor-pointer transition-transform hover:scale-105 active:scale-95"
+          title="Open Navigation Menu"
+          aria-label="Open Navigation Menu"
+        >
+          <Menu className="w-5 h-5" />
+          <span className="text-xs font-bold hidden sm:inline">Menu</span>
+        </button>
+      )}
+
       <Sidebar
+        isOpen={isSidebarOpen}
+        onToggleCollapse={() => setIsSidebarOpen(false)}
         activePage={activePage}
-        onNavigate={setActivePage}
+        onNavigate={(page) => {
+          setActivePage(page);
+          if (typeof window !== 'undefined' && window.innerWidth < 1024) {
+            setIsSidebarOpen(false);
+          }
+        }}
         onOpenAddModal={() => setIsAddModalOpen(true)}
         isDarkMode={isDarkMode}
         onToggleTheme={() => setIsDarkMode(p => !p)}
         onLogout={onLogout}
       />
 
-      <main className="flex-1 overflow-y-auto p-6 md:p-8 max-h-screen">
+      <main className={`flex-1 overflow-y-auto p-4 sm:p-6 md:p-8 max-h-screen w-full transition-all duration-300 ${!isSidebarOpen ? 'pt-16 sm:pt-6' : ''}`}>
         {/* Backend status banner */}
         {backendOnline === false && (
           <div className="mb-4 px-4 py-2 rounded-xl bg-rose-500/20 border border-rose-500/40 text-rose-300 text-xs font-semibold flex items-center gap-2">
